@@ -1,30 +1,56 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
- */
+import React, { Component } from "react";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button
+} from "react-native";
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const instructions = Platform.select({});
 
 type Props = {};
-export default class App extends Component<Props> {
+export default class App extends Component {
+  state = {
+    placeName: "",
+    places: []
+  };
+  placeNameChangedHandler = val => {
+    this.setState({
+      placeName: val
+    });
+  };
+  placeSubmitHandler = () => {
+    if (this.state.placeName.trim() === "") {
+      return;
+    }
+    this.setState(prevState => {
+      return {
+        places: prevState.places.concat(prevState.placeName)
+      };
+    });
+  };
   render() {
+    const placesOutput = this.state.places.map((place, i) => (
+      <Text key={i}>{place}</Text>
+    ));
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <View style={styles.placeText}>
+          <TextInput
+            value={this.state.placeName}
+            onChangeText={this.placeNameChangedHandler}
+            placeholder="Place Name"
+            style={styles.placeInput}
+          />
+          <Button
+            title="Add"
+            style={styles.placeButton}
+            onPress={this.placeSubmitHandler}
+          />
+        </View>
+        <View>{placesOutput}</View>
       </View>
     );
   }
@@ -33,18 +59,22 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: "flex-start",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF",
+    padding: 20
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  placeText: {
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    flexDirection: "row",
+    width: "100%"
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  placeInput: {
+    width: "70%",
+    backgroundColor: "#c0effd"
   },
+  placeButton: {
+    width: "30%"
+  }
 });
